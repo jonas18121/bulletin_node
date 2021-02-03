@@ -20,34 +20,34 @@ exports.createEleve = (request, response, next) => {
 
 
 
-exports.getOneEleve = (req, res, next) => {
+exports.getOneEleve = (request, response, next) => {
 
-    Eleve.findOne({ _id: req.params.id })
-        .then(thing => res.status(200).json(thing))
-        .catch(error => res.status(404).json({ error }));
+    Eleve.findOne({ _id: request.params.id })
+        .then(eleve => response.status(200).json(eleve))
+        .catch(error => response.status(404).json({ error }));
 }
 
 
-exports.modifyEleve = (req, res, next) => {
+exports.modifyEleve = (request, response, next) => {
 
-    Eleve.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-        .catch(error => res.status(400).json({ error }));
+    Eleve.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id })
+        .then(() => response.status(200).json({ message: 'Objet modifié !'}))
+        .catch(error => response.status(400).json({ error }));
 
 }
 
 
-exports.deleteEleve = (req, res, next) => {
+exports.deleteEleve = (request, response, next) => {
     
-    Eleve.deleteOne({ _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-        .catch(error => res.status(400).json({ error }));
+    Eleve.deleteOne({ _id: request.params.id })
+        .then(() => response.status(200).json({ message: 'Objet supprimé !'}))
+        .catch(error => response.status(400).json({ error }));
 }
 
 
 exports.getAllEleve = (request, response, next) => {
 
     Eleve.find()
-        .then(things => response.status(200).json(things))
+        .then(eleve => response.status(200).json(eleve))
         .catch(error => response.status(400).json({ error }));
 }

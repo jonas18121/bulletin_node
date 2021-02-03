@@ -9,6 +9,8 @@ const app = express();
 
 const eleveRoutes = require('./routes/eleve');
 
+const path = require('path');
+
 
 const uri = `mongodb://localhost:27017/bulletin_node`;
 

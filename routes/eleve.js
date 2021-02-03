@@ -1,19 +1,19 @@
 const express = require('express');
 
-const router = express.router();
+const router = express.Router();
 
 
 const eleveController = require('../controllers/eleve');
 
 
-app.post('/', eleveController.createEleve);
+router.post('/', eleveController.createEleve);
 
-app.get('/:id', eleveController.getOneEleve);
+router.get('/:id', eleveController.getOneEleve);
 
-app.put('/:id', eleveController.modifyEleve);
+router.put('/:id', eleveController.modifyEleve);
 
-app.delete('/:id', eleveController.deleteEleve);
+router.delete('/:id', eleveController.deleteEleve);
 
-app.get('/', eleveController.getAllEleve);
+router.get('/', eleveController.getAllEleve);
 
 module.exports = router;
