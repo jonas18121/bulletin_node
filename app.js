@@ -8,6 +8,7 @@ const app = express();
 // const Eleve = require('./models/eleve');
 
 const eleveRoutes = require('./routes/eleve');
+const classeDECloeRoutes = require('./routes/classeDEcole');
 
 const path = require('path');
 
@@ -37,6 +38,7 @@ app.use((request, response, next) => {
 app.use(bodyParser.json());
 
 
-app.use('/api/eleve', eleveRoutes);
+app.use('/api/eleves', eleveRoutes);
+app.use('/api/classe_d_ecoles', classeDECloeRoutes);
 
 module.exports = app;
