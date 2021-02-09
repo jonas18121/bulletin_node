@@ -12,8 +12,6 @@ exports.createClasseDEcole = async (request, response, next) => {
 
     });
 
-    console.log(classeDEcole);
-
     await classeDEcole.save()
         .then(() => response.status(201).json({ message: 'Objet enregistré !'}))
         .catch(error => response.status(400).json({ error }))
@@ -26,7 +24,9 @@ exports.getOneClasseDEcole = async (request, response, next) => {
 
     await ClasseDEcole.findOne({ _id: request.params.id })
         .populate('eleves')
-        .then(classeDEcole => response.status(200).json(classeDEcole))
+        .then(classeDEcole => {
+            response.status(200).json(classeDEcole)
+        })
         .catch(error => response.status(404).json({ error }))
     ;
 }
@@ -38,9 +38,6 @@ exports.modifyClasseDEcole = async (request, response, next) => {
         .then(() => response.status(200).json({ message: 'Objet modifié !'}))
         .catch(error => response.status(400).json({ error }))
     ;
-
-    console.log(request.body);
-
 }
 
 
