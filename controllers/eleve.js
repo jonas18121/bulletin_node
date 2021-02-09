@@ -66,25 +66,25 @@ exports.modifyEleve = async (request, response, next) => {
 
                                 // trouve la nouvelle classe de l'élève
                                 ClasseDEcole.findOne({ _id: request.body.classe_d_ecole })
-                                .then(newClasse => {
+                                    .then(newClasse => {
 
-                                    // console.log('nouvelle classe ' + newClasse);
+                                        // console.log('nouvelle classe ' + newClasse);
 
-                                    // ajouter l'élève dans sa nouvelle classe
-                                    newClasse.eleves.push(eleve);
-                                    
-                                    //modifier la nouvelle classe
-                                    ClasseDEcole.updateOne({ _id: request.body.classe_d_ecole }, newClasse)
-                                        .then(() => {
+                                        // ajouter l'élève dans sa nouvelle classe
+                                        newClasse.eleves.push(eleve);
+                                        
+                                        //modifier la nouvelle classe
+                                        ClasseDEcole.updateOne({ _id: request.body.classe_d_ecole }, newClasse)
+                                            .then(() => { 
 
-                                            // modifier l'élève
-                                            Eleve.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id })
-                                                .then(() => response.status(200).json({ message: 'L\'élève a été bien mis dans sa nouvelle classe'}))
-                                                .catch(error => response.status(400).json({ error }))
-                                            ;
-                                        })
-                                        .catch(error => response.status(400).json({ error }))
-                                    ;
+                                                // modifier l'élève
+                                                Eleve.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id })
+                                                    .then(() => response.status(200).json({ message: 'L\'élève a été bien mis dans sa nouvelle classe'}))
+                                                    .catch(error => response.status(400).json({ error }))
+                                                ;
+                                            })
+                                            .catch(error => response.status(400).json({ error }))
+                                        ;
                                     })
                                     .catch(error => response.status(400).json({ error }))
                                 ;
