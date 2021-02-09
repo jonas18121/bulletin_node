@@ -14,7 +14,6 @@ exports.createEleve = async (request, response, next) => {
         ...request.body
         
     });
-    console.log(request.body);
 
     await eleve.save()
         .then(() => ClasseDEcole.findOne({ _id: eleve.classe_d_ecole })
@@ -23,8 +22,9 @@ exports.createEleve = async (request, response, next) => {
                 classe.eleves.push(eleve);
 
                 ClasseDEcole.updateOne({_id: classe.id}, classe)
-                    .then(() => response.status(201).json({ message: 'Objet enregistré !'}))
+                    .then(() => response.status(201).json({ message: 'Le nouvel élève a bien été enregistré !'}))
                     .catch(error => response.status(400).json({ error }))
+                ;
             })
         )
         .catch(error => response.status(400).json({ error }))
@@ -38,7 +38,8 @@ exports.getOneEleve = async (request, response, next) => {
     await Eleve.findOne({ _id: request.params.id })
         .populate('classe_d_ecole')
         .then(eleve => response.status(200).json(eleve))
-        .catch(error => response.status(404).json({ error }));
+        .catch(error => response.status(404).json({ error }))
+    ;
 }
 
 
@@ -51,7 +52,7 @@ exports.modifyEleve = async (request, response, next) => {
             //si il y a un changement de classe lors de la modification de l'élève 
             if (eleve.classe_d_ecole._id != request.body.classe_d_ecole) {
                 
-                // trouve l'ancienne classe de l'élève
+                // trouver l'ancienne classe de l'élève
                 ClasseDEcole.findOne({ _id: eleve.classe_d_ecole._id })
                     .then(oldClasse => {
 
@@ -64,7 +65,7 @@ exports.modifyEleve = async (request, response, next) => {
                         ClasseDEcole.updateOne({ _id: eleve.classe_d_ecole._id }, oldClasse)
                             .then(()=> {
 
-                                // trouve la nouvelle classe de l'élève
+                                // trouver la nouvelle classe de l'élève
                                 ClasseDEcole.findOne({ _id: request.body.classe_d_ecole })
                                     .then(newClasse => {
 
@@ -80,16 +81,16 @@ exports.modifyEleve = async (request, response, next) => {
                                                 // modifier l'élève
                                                 Eleve.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id })
                                                     .then(() => response.status(200).json({ message: 'L\'élève a été bien mis dans sa nouvelle classe'}))
-                                                    .catch(error => response.status(400).json({ error }))
+                                                    .catch(error => response.status(500).json({ error }))
                                                 ;
                                             })
-                                            .catch(error => response.status(400).json({ error }))
+                                            .catch(error => response.status(500).json({ error }))
                                         ;
                                     })
-                                    .catch(error => response.status(400).json({ error }))
+                                    .catch(error => response.status(500).json({ error }))
                                 ;
                             })
-                            .catch(error => response.status(400).json({ error }))
+                            .catch(error => response.status(500).json({ error }))
                         ;
                     })
                     .catch(error => response.status(400).json({ error }))
@@ -111,10 +112,35 @@ exports.modifyEleve = async (request, response, next) => {
 
 
 exports.deleteEleve = async (request, response, next) => {
-    
-    await Eleve.deleteOne({ _id: request.params.id })
-        .then(() => response.status(200).json({ message: 'Objet supprimé !'}))
-        .catch(error => response.status(400).json({ error }));
+
+    await Eleve.findOne({ _id: request.params.id })
+        .then(eleve => {
+
+            // trouver la classe de l'élève
+            ClasseDEcole.findOne({ _id: eleve.classe_d_ecole })
+                .then(classe => {
+
+                    // supprimer l'id de l'élève dans la classe
+                    classe.eleves.splice(classe.eleves.indexOf(eleve._id),1);
+
+                    // modifier la classe
+                    ClasseDEcole.updateOne({ _id: classe._id }, classe)
+                        .then(() => {
+
+                            // supprimer les informations de l'élève
+                            Eleve.deleteOne({ _id: request.params.id })
+                                .then(() => response.status(200).json({ message: 'Objet supprimé !'}))
+                                .catch(error => response.status(400).json({ error }))
+                            ;
+                        })
+                    ;
+
+                })
+                .catch(error => response.status(500).json({ error }))
+            ;
+        })
+        .catch(error => response.status(500).json({ error }))
+    ;
 }
 
 
@@ -122,5 +148,6 @@ exports.getAllEleve = async (request, response, next) => {
 
     await Eleve.find()
         .then(eleve => response.status(200).json(eleve))
-        .catch(error => response.status(400).json({ error }));
+        .catch(error => response.status(400).json({ error }))
+    ;
 }
