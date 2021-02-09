@@ -19,11 +19,13 @@ const uri = `mongodb://localhost:27017/bulletin_node`;
 * connexion à MongoDB
 */
 mongoose.connect(uri,
-    { useNewUrlParser: true,
+    {   
+        useNewUrlParser: true,
         useUnifiedTopology: true 
     })
     .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !'));
+    .catch(() => console.log('Connexion à MongoDB échouée !'))
+;
 
 const bodyParser = require('body-parser');
 
