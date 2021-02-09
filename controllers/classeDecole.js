@@ -2,7 +2,7 @@ const ClasseDEcole = require('../models/classeDEcole');
 
 
 
-exports.createClasseDEcole = (request, response, next) => {
+exports.createClasseDEcole = async (request, response, next) => {
 
     delete request.body._id;
 
@@ -12,7 +12,9 @@ exports.createClasseDEcole = (request, response, next) => {
 
     });
 
-    classeDEcole.save()
+    console.log(classeDEcole);
+
+    await classeDEcole.save()
         .then(() => response.status(201).json({ message: 'Objet enregistré !'}))
         .catch(error => response.status(400).json({ error }))
     ;
@@ -20,34 +22,39 @@ exports.createClasseDEcole = (request, response, next) => {
 
 
 
-exports.getOneClasseDEcole = (request, response, next) => {
+exports.getOneClasseDEcole = async (request, response, next) => {
 
-    ClasseDEcole.findOne({ _id: request.params.id })
+    await ClasseDEcole.findOne({ _id: request.params.id })
+        .populate('eleves')
         .then(classeDEcole => response.status(200).json(classeDEcole))
-        .catch(error => response.status(404).json({ error }));
+        .catch(error => response.status(404).json({ error }))
+    ;
 }
 
 
-exports.modifyClasseDEcole = (request, response, next) => {
+exports.modifyClasseDEcole = async (request, response, next) => {
 
-    ClasseDEcole.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id })
+    await ClasseDEcole.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id })
         .then(() => response.status(200).json({ message: 'Objet modifié !'}))
-        .catch(error => response.status(400).json({ error }));
+        .catch(error => response.status(400).json({ error }))
+    ;
+
+    console.log(request.body);
 
 }
 
 
-exports.deleteClasseDEcole = (request, response, next) => {
+exports.deleteClasseDEcole = async (request, response, next) => {
     
-    ClasseDEcole.deleteOne({ _id: request.params.id })
+    await ClasseDEcole.deleteOne({ _id: request.params.id })
         .then(() => response.status(200).json({ message: 'Objet supprimé !'}))
         .catch(error => response.status(400).json({ error }));
 }
 
 
-exports.getAllClasseDEcole = (request, response, next) => {
+exports.getAllClasseDEcole = async (request, response, next) => {
 
-    ClasseDEcole.find()
+    await ClasseDEcole.find()
         .then(classeDEcole => response.status(200).json(classeDEcole))
         .catch(error => response.status(400).json({ error }));
 }
