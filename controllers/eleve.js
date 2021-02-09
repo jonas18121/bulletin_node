@@ -20,6 +20,8 @@ exports.createEleve = async (request, response, next) => {
             .then(classe => {
 
                 classe.eleves.push(eleve);
+                classe.nbEleves.push(classe.eleves.length)
+                console.log(classe.eleves.length);
 
                 ClasseDEcole.updateOne({_id: classe.id}, classe)
                     .then(() => response.status(201).json({ message: 'Le nouvel élève a bien été enregistré !'}))
@@ -54,10 +56,32 @@ exports.modifyEleve = async (request, response, next) => {
                 
                 // trouver l'ancienne classe de l'élève
                 ClasseDEcole.findOne({ _id: eleve.classe_d_ecole._id })
+                    .populate('eleves')
                     .then(oldClasse => {
+
+                        var sommeOldClasse = 0;
 
                         // supprimer l'id de l'élève dans l'ancienne classe
                         oldClasse.eleves.splice(oldClasse.eleves.indexOf(eleve._id),1);
+                        oldClasse.nbEleves = oldClasse.eleves.length;
+                        
+
+                        console.log('avant for de l\'ancienne classe ' + oldClasse.eleves);
+                        for(i=0; i < oldClasse.nbEleves; i++)
+                        {
+
+                            
+                            console.log('pendant for de l\'ancienne classe ' + oldClasse.eleves[i].moyenne);
+                            moyenneOldClasse = oldClasse.eleves[i].moyenne;
+
+                            console.log('voici la moyenne de l\'ancienne classe ' + moyenneOldClasse);
+                            sommeOldClasse += moyenneOldClasse ;
+
+                        };
+                        console.log('après for de l\'ancienne classe ' + sommeOldClasse);
+
+                        oldClasse.moyenneClasse = sommeOldClasse / oldClasse.nbEleves;
+                        console.log('moyenne de l\'ancienne classe ' + oldClasse.moyenneClasse);
 
                         // console.log('ancienne classe ' + oldClasse);
 
@@ -67,12 +91,35 @@ exports.modifyEleve = async (request, response, next) => {
 
                                 // trouver la nouvelle classe de l'élève
                                 ClasseDEcole.findOne({ _id: request.body.classe_d_ecole })
+                                    .populate('eleves')
                                     .then(newClasse => {
 
+                                        var sommeNewClasse = 0;
                                         // console.log('nouvelle classe ' + newClasse);
 
                                         // ajouter l'élève dans sa nouvelle classe
                                         newClasse.eleves.push(eleve);
+
+                                        newClasse.nbEleves = newClasse.eleves.length;
+                                        console.log('nombre d\'élève dans la nouvelle classe ' + newClasse.nbEleves);
+
+                                        console.log('avant for nouvelle classe ' + newClasse.eleves);
+                                        for(i=0; i < newClasse.nbEleves; i++)
+                                        {
+
+                                            
+                                            console.log('pendant for nouvelle classe ' + newClasse.eleves[i].moyenne);
+                                            moyenneNewClasse = newClasse.eleves[i].moyenne;
+
+                                            console.log('voici la moyenne nouvelle classe ' + moyenneNewClasse);
+                                            sommeNewClasse += moyenneNewClasse ;
+
+                                        };
+                                        console.log('après for nouvelle classe ' + sommeNewClasse);
+
+                                        newClasse.moyenneClasse = sommeNewClasse / newClasse.nbEleves;
+                                        console.log('moyenne de la nouvelle classe nouvelle classe ' + newClasse.moyenneClasse);
+
                                         
                                         //modifier la nouvelle classe
                                         ClasseDEcole.updateOne({ _id: request.body.classe_d_ecole }, newClasse)
@@ -106,8 +153,6 @@ exports.modifyEleve = async (request, response, next) => {
             }
         })
     ; 
-
-
 }
 
 
