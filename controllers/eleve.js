@@ -51,6 +51,8 @@ exports.modifyEleve = async (request, response, next) => {
         .populate('classe_d_ecole')
         .then(eleve => {
 
+            
+
             //si il y a un changement de classe lors de la modification de l'élève 
             if (eleve.classe_d_ecole._id != request.body.classe_d_ecole) {
                 
@@ -67,7 +69,7 @@ exports.modifyEleve = async (request, response, next) => {
                         
 
                         console.log('avant for de l\'ancienne classe ' + oldClasse.eleves);
-                        for(i=0; i < oldClasse.nbEleves; i++)
+                        for(i = 0 ; i < oldClasse.nbEleves ; i++)
                         {
 
                             
@@ -95,7 +97,7 @@ exports.modifyEleve = async (request, response, next) => {
                                     .then(newClasse => {
 
                                         var sommeNewClasse = 0;
-                                        // console.log('nouvelle classe ' + newClasse);
+                                        console.log('E L E V E ' + eleve);
 
                                         // ajouter l'élève dans sa nouvelle classe
                                         newClasse.eleves.push(eleve);
@@ -104,7 +106,7 @@ exports.modifyEleve = async (request, response, next) => {
                                         console.log('nombre d\'élève dans la nouvelle classe ' + newClasse.nbEleves);
 
                                         console.log('avant for nouvelle classe ' + newClasse.eleves);
-                                        for(i=0; i < newClasse.nbEleves; i++)
+                                        for(i = 0 ; i < newClasse.nbEleves ; i++)
                                         {
 
                                             
@@ -144,6 +146,40 @@ exports.modifyEleve = async (request, response, next) => {
                 ;
             }
             else{
+
+                    // request.body.moyenne
+                console.log(eleve.moyenne != request.body.moyenne);
+
+                if (eleve.moyenne != request.body.moyenne) {
+
+                    sommeclasseCurrent = 0;
+                    
+                    // trouver la classe de l'élève
+                    ClasseDEcole.findOne({ _id: eleve.classe_d_ecole._id })
+                        .populate('eleves')
+                        .then(classeCurrent => {
+
+                            console.log('avant for de la classe actuelle ' + classeCurrent.eleves);
+                            for(i = 0 ; i < classeCurrent.nbEleves ; i++)
+                            {
+
+                                
+                                console.log('pendant for de la classe actuelle ' + classeCurrent.eleves[i].moyenne);
+                                moyenneclasseCurrent = classeCurrent.eleves[i].moyenne;
+
+                                console.log('voici la moyenne de la classe actuelle ' + moyenneclasseCurrent);
+                                sommeclasseCurrent += moyenneclasseCurrent ;
+
+                            };
+                            console.log('après for de la classe actuelle ' + sommeclasseCurrent);
+
+                            classeCurrent.moyenneClasse = sommeclasseCurrent / classeCurrent.nbEleves;
+                            console.log('moyenne de la classe actuelle ' + classeCurrent.moyenneClasse);
+
+                        })
+                        .catch(error => response.status(500).json({ error }))
+                    ;
+                }
 
                 // modifier l'élève
                 Eleve.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id })
