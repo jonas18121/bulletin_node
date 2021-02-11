@@ -11,6 +11,7 @@ const eleveRoutes = require('./routes/eleve');
 const classeDECloeRoutes = require('./routes/classeDEcole');
 const userRoutes = require('./routes/user');
 const devoirRoutes = require('./routes/devoir');
+const devoirEleveRoutes = require('./routes/devoirEleve');
 
 const path = require('path');
 
@@ -23,7 +24,9 @@ const uri = `mongodb://localhost:27017/bulletin_node`;
 mongoose.connect(uri,
     {   
         useNewUrlParser: true,
-        useUnifiedTopology: true 
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        retryWrites: true, 
     })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'))
@@ -46,5 +49,6 @@ app.use('/api/eleves', eleveRoutes);
 app.use('/api/classe_d_ecoles', classeDECloeRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/api/devoirs', devoirRoutes);
+app.use('/api/devoirEleves', devoirEleveRoutes);
 
 module.exports = app;
