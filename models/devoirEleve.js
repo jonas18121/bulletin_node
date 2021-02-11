@@ -7,12 +7,12 @@ const devoirEleveSchema = mongoose.Schema(
             required: true
         },
         id_eleve: {
-            type: Number,
-            required: true
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Eleve' 
         },
         id_devoir: {
-            type: Number,
-            required: true
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Devoir' 
         },
     }
 );
