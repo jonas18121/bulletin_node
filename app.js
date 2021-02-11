@@ -10,6 +10,7 @@ const app = express();
 const eleveRoutes = require('./routes/eleve');
 const classeDECloeRoutes = require('./routes/classeDEcole');
 const userRoutes = require('./routes/user');
+const devoirRoutes = require('./routes/devoir');
 
 const path = require('path');
 
@@ -44,5 +45,6 @@ app.use(bodyParser.json());
 app.use('/api/eleves', eleveRoutes);
 app.use('/api/classe_d_ecoles', classeDECloeRoutes);
 app.use('/api/auth', userRoutes);
+app.use('/api/devoirs', devoirRoutes);
 
 module.exports = app;
