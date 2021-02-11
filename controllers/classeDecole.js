@@ -45,7 +45,8 @@ exports.deleteClasseDEcole = async (request, response, next) => {
     
     await ClasseDEcole.deleteOne({ _id: request.params.id })
         .then(() => response.status(200).json({ message: 'Objet supprimé !'}))
-        .catch(error => response.status(400).json({ error }));
+        .catch(error => response.status(400).json({ error }))
+    ;
 }
 
 
@@ -53,5 +54,6 @@ exports.getAllClasseDEcole = async (request, response, next) => {
 
     await ClasseDEcole.find()
         .then(classeDEcole => response.status(200).json(classeDEcole))
-        .catch(error => response.status(400).json({ error }));
+        .catch(error => response.status(400).json({ error }))
+    ;
 }
