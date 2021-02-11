@@ -2,6 +2,10 @@ const DevoirEleve = require('../models/devoirEleve');
 const Eleve = require('../models/eleve');
 const Devoir = require('../models/devoir');
 const { populate } = require('../models/devoirEleve');
+const eleve = require('../models/eleve');
+
+// $set = ajouter
+// $pull = retirer
 
 const devoirEleveController = {};
 
@@ -14,7 +18,27 @@ devoirEleveController.createDevoirEleve = async (request, response, next) => {
     });
 
     await devoirEleve.save()
-        .then(() => response.status(201).json({ message: 'Le devoir est bien associé à un élève, et bien enregistré !'}))
+        .then(/*() => response.status(201).json({ message: 'Le devoir est bien associé à un élève, et bien enregistré !'})*/
+            devoirEleve => {
+                Eleve.findByIdAndUpdate(
+                    { 
+                        _id: devoirEleve.id_eleve 
+                    },
+                    {
+                        $set: 
+                            {
+                                devoir_eleves: devoirEleve._id
+                            }
+                    }
+                )
+                .then(
+                    () => {
+                        response.status(201).json({ message: 'Le devoir est bien associé à un élève, et bien enregistré !'})
+                    }
+                )
+                .catch(error => response.status(400).json({ error }));
+            }
+        )
         .catch(error => response.status(400).json({ error }))
     ;
 }
