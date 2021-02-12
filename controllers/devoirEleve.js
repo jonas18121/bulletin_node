@@ -6,6 +6,7 @@ const eleve = require('../models/eleve');
 
 // $set = ajouter
 // $pull = retirer
+// $push = ajouter dans tableau
 
 const devoirEleveController = {};
 
@@ -18,28 +19,53 @@ devoirEleveController.createDevoirEleve = async (request, response, next) => {
     });
 
     await devoirEleve.save()
-        .then(/*() => response.status(201).json({ message: 'Le devoir est bien associé à un élève, et bien enregistré !'})*/
+        .then(
             devoirEleve => {
                 Eleve.findByIdAndUpdate(
                     { 
                         _id: devoirEleve.id_eleve 
                     },
                     {
-                        $set: 
+                        $push: 
                             {
                                 devoir_eleves: devoirEleve._id
                             }
                     }
                 )
                 .then(
-                    () => {
-                        response.status(201).json({ message: 'Le devoir est bien associé à un élève, et bien enregistré !'})
+                    eleve => {
+                        Eleve.findOne({ _id: eleve._id })
+                            .populate('devoir_eleves')
+                            .then(
+
+                                eleve_modif => {
+
+                                    var moyenne;
+                                    var sommeMoyenne = 0; 
+
+                                    for (let index = 0; index < eleve_modif.devoir_eleves.length; index++) {
+
+                                        moyenne = eleve_modif.devoir_eleves[index].note;
+
+                                        sommeMoyenne += moyenne;
+                                    }
+
+                                    eleve_modif.moyenne = sommeMoyenne / eleve_modif.devoir_eleves.length;
+
+                                    Eleve.updateOne({ _id: eleve._id }, eleve_modif)
+                                        .then(
+                                            () => response.status(200).json({ message: 'Le devoir est bien associé à un élève, et bien enregistré !' })
+                                        )
+                                        .catch(error => response.status(400).json({ error }))
+                                        ;
+                                }
+                            )
                     }
                 )
-                .catch(error => response.status(400).json({ error }));
+                .catch(error => response.status(500).json({ error }));
             }
         )
-        .catch(error => response.status(400).json({ error }))
+        .catch(error => response.status(500).json({ error }))
     ;
 }
 
