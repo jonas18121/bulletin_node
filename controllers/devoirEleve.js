@@ -2,9 +2,9 @@ const DevoirEleve = require('../models/devoirEleve');
 const Eleve = require('../models/eleve');
 const Devoir = require('../models/devoir');
 const { populate } = require('../models/devoirEleve');
-const eleve = require('../models/eleve');
+const ClasseDEcole = require('../models/classeDEcole');
 
-// $set = ajouter
+// $set  = ajouter
 // $pull = retirer
 // $push = ajouter dans tableau
 
@@ -21,6 +21,8 @@ devoirEleveController.createDevoirEleve = async (request, response, next) => {
     await devoirEleve.save()
         .then(
             devoirEleve => {
+
+                // trouver l'élève et ensuite le modifier 
                 Eleve.findByIdAndUpdate(
                     { 
                         _id: devoirEleve.id_eleve 
@@ -34,6 +36,8 @@ devoirEleveController.createDevoirEleve = async (request, response, next) => {
                 )
                 .then(
                     eleve => {
+
+                        //trouver l'élève
                         Eleve.findOne({ _id: eleve._id })
                             .populate('devoir_eleves')
                             .then(
@@ -52,9 +56,39 @@ devoirEleveController.createDevoirEleve = async (request, response, next) => {
 
                                     eleve_modif.moyenne = sommeMoyenne / eleve_modif.devoir_eleves.length;
 
+                                    // modifier l'élève
                                     Eleve.updateOne({ _id: eleve._id }, eleve_modif)
                                         .then(
-                                            () => response.status(200).json({ message: 'Le devoir est bien associé à un élève, et bien enregistré !' })
+                                            () => {
+                                                var moyenneclasseCurrent;
+                                                var sommeclasseCurrent = 0;
+
+                                                // trouver la classe
+                                                ClasseDEcole.findOne({ _id: eleve_modif.classe_d_ecole._id })
+                                                    .populate('eleves')
+                                                    .then(classeCurrent => {
+
+                                                        for(i = 0 ; i < classeCurrent.nbEleves ; i++)
+                                                        {
+                                                            moyenneclasseCurrent = classeCurrent.eleves[i].moyenne;
+                            
+                                                            sommeclasseCurrent += moyenneclasseCurrent ;
+                                                        };
+                            
+                                                        classeCurrent.moyenneClasse = sommeclasseCurrent / classeCurrent.nbEleves;
+
+                                                        // modifier la classe
+                                                        ClasseDEcole.updateOne({ _id: eleve_modif.classe_d_ecole._id }, classeCurrent)
+                                                            .then(() => { 
+                                                                response.status(200).json({ message: 'La note de l\'élève a bien été remplacer pour ce devoir !' });
+                                                            })
+                                                            .catch(error => response.status(500).json({ error }))
+                                                        ;
+                            
+                                                    })
+                                                    .catch(error => response.status(500).json({ error }))
+                                                ;
+                                            }
                                         )
                                         .catch(error => response.status(400).json({ error }))
                                     ;
@@ -85,7 +119,7 @@ devoirEleveController.getOneDevoirEleve = async (request, response, next) => {
 
 devoirEleveController.modifyDevoirEleve = async (request, response, next) => {
 
-    await DevoirEleve.updateOne(
+    await DevoirEleve.findByIdAndUpdate(
         { 
             _id: request.params.id 
         },
@@ -94,7 +128,74 @@ devoirEleveController.modifyDevoirEleve = async (request, response, next) => {
             _id: request.params.id 
         }
     )
-    .then(() => response.status(200).json({ message: 'Le lien entre le devoir et l\'élève a bien été modifié !'}))
+    .populate('id_eleve')
+    .then( /*() => response.status(200).json({ message: 'La note entre le devoir et l\'élève a bien été modifié !'})*/
+        devoirEleve => {
+            
+            // trouver l'élève
+            Eleve.findOne({ _id: devoirEleve.id_eleve._id })
+                .populate('devoir_eleves')
+                .populate('classe_d_ecole')
+                .then(
+
+                    eleve_modif => {
+
+                        var moyenne;
+                        var sommeMoyenne = 0; 
+
+                        // calcule de la moyenne de l'élève
+                        for (let index = 0; index < eleve_modif.devoir_eleves.length; index++) {
+
+                            moyenne = eleve_modif.devoir_eleves[index].note;
+
+                            sommeMoyenne += moyenne;
+                        }
+
+                        eleve_modif.moyenne = sommeMoyenne / eleve_modif.devoir_eleves.length;
+
+                        //modifier l'élève
+                        Eleve.updateOne({ _id: devoirEleve.id_eleve._id }, eleve_modif)
+                            .then(
+                                () => 
+                                    {   
+                                        var moyenneclasseCurrent;
+                                        var sommeclasseCurrent = 0;
+
+                                        // trouver la classe
+                                        ClasseDEcole.findOne({ _id: eleve_modif.classe_d_ecole._id })
+                                            .populate('eleves')
+                                            .then(classeCurrent => {
+
+                                                // calculer la moyenne général de la classe
+                                                for(i = 0 ; i < classeCurrent.nbEleves ; i++)
+                                                {
+                                                    moyenneclasseCurrent = classeCurrent.eleves[i].moyenne;
+                    
+                                                    sommeclasseCurrent += moyenneclasseCurrent ;
+                                                };
+                    
+                                                classeCurrent.moyenneClasse = sommeclasseCurrent / classeCurrent.nbEleves;
+
+                                                // modifier la classe
+                                                ClasseDEcole.updateOne({ _id: eleve_modif.classe_d_ecole._id }, classeCurrent)
+                                                    .then(() => { 
+                                                        response.status(200).json({ message: 'La note de l\'élève a bien été remplacer pour ce devoir !' });
+                                                    })
+                                                    .catch(error => response.status(500).json({ error }))
+                                                ;
+                                            })
+                                            .catch(error => response.status(500).json({ error }))
+                                        ;
+                                    }
+                            )
+                            .catch(error => response.status(500).json({ error }))
+                        ;
+                    }
+                )
+                .catch(error => response.status(500).json({ error }))
+            ;
+        }
+    )
     .catch(error => response.status(400).json({ error }));
 }
 
