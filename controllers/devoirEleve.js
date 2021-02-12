@@ -57,9 +57,11 @@ devoirEleveController.createDevoirEleve = async (request, response, next) => {
                                             () => response.status(200).json({ message: 'Le devoir est bien associé à un élève, et bien enregistré !' })
                                         )
                                         .catch(error => response.status(400).json({ error }))
-                                        ;
+                                    ;
                                 }
                             )
+                            .catch(error => response.status(500).json({ error }))
+                        ;
                     }
                 )
                 .catch(error => response.status(500).json({ error }));
