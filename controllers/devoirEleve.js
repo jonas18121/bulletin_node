@@ -3,6 +3,7 @@ const Eleve = require('../models/eleve');
 const Devoir = require('../models/devoir');
 const { populate } = require('../models/devoirEleve');
 const ClasseDEcole = require('../models/classeDEcole');
+const devoirEleve = require('../models/devoirEleve');
 
 // $set  = ajouter
 // $pull = retirer
@@ -201,9 +202,82 @@ devoirEleveController.modifyDevoirEleve = async (request, response, next) => {
 
 devoirEleveController.deleteDevoirEleve = async (request, response, next) => {
 
-    await DevoirEleve.deleteOne({ _id: request.params.id })
+    /* await DevoirEleve.deleteOne({ _id: request.params.id })
         .then(() => response.status(200).json({ message: 'Objet supprimé !'}))
         .catch(error => response.status(400).json({ error }))
+    ; */
+
+    await DevoirEleve.findOneAndDelete({ _id: request.params.id })
+        .then(
+            devoirEleve => {
+                console.log(devoirEleve);
+
+                //trouver l'élève
+                Eleve.findOne({ _id: devoirEleve.id_eleve })
+                    .populate('devoir_eleves')
+                    .then(
+
+                        eleve_modif => {
+
+                            var moyenne;
+                            var sommeMoyenne = 0; 
+
+                            for (let index = 0; index < eleve_modif.devoir_eleves.length; index++) {
+
+                                moyenne = eleve_modif.devoir_eleves[index].note;
+
+                                sommeMoyenne += moyenne;
+                            }
+
+                            eleve_modif.moyenne = sommeMoyenne / eleve_modif.devoir_eleves.length;
+
+                            // modifier l'élève
+                            Eleve.updateOne({ _id: devoirEleve.id_eleve }, eleve_modif)
+                                .then(
+                                    () => {
+                                        var moyenneclasseCurrent;
+                                        var sommeclasseCurrent = 0;
+
+                                        // trouver la classe
+                                        ClasseDEcole.findOne({ _id: eleve_modif.classe_d_ecole._id })
+                                            .populate('eleves')
+                                            .then(classeCurrent => {
+
+                                                for(i = 0 ; i < classeCurrent.nbEleves ; i++)
+                                                {
+                                                    moyenneclasseCurrent = classeCurrent.eleves[i].moyenne;
+                    
+                                                    sommeclasseCurrent += moyenneclasseCurrent ;
+                                                };
+                    
+                                                classeCurrent.moyenneClasse = sommeclasseCurrent / classeCurrent.nbEleves;
+
+                                                // modifier la classe
+                                                ClasseDEcole.updateOne({ _id: eleve_modif.classe_d_ecole._id }, classeCurrent)
+                                                    .then(() => { 
+                                                        response.status(200).json(
+                                                            { 
+                                                                message: 'La note de l\'élève a bien été supprimer pour ce devoir et on a recalculer la moyenne de l\'élève ainsi que la moyenne général de la classe !' 
+                                                            }
+                                                        );
+                                                    })
+                                                    .catch(error => response.status(500).json({ error }))
+                                                ;
+                    
+                                            })
+                                            .catch(error => response.status(500).json({ error }))
+                                        ;
+                                    }
+                                )
+                                .catch(error => response.status(400).json({ error }))
+                            ;
+                        }
+                    )
+                    .catch(error => response.status(500).json({ error }))
+                ;
+            }
+        )
+        .catch(error => response.status(500).json({ error }))
     ;
 }
 
@@ -217,4 +291,5 @@ devoirEleveController.getAllDevoirEleve = async (request, response, next) => {
     ;
 }
 
-module.exports = devoirEleveController;
+
+module.exports = devoirEleveController; 
