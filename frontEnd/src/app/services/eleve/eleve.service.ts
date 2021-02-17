@@ -26,11 +26,10 @@ export class EleveService {
 
                             return new Eleve().deserialize(one_eleve);
                         });
-                        
                     }
                 )
-
-            );
+            )
+        ;
     }
 
     emitEleveSubject(){
