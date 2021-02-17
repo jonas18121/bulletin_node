@@ -20,24 +20,23 @@ export class GetAllEleveComponent implements OnInit {
 
     ngOnInit() {
 
-        this.eleveSubscribe = this.eleveService.eleve$.subscribe(
+        /* this.eleveSubscribe = this.eleveService.eleve$.subscribe(
 
             ( eleves: Eleve[] ) => {
                 this.eleves = eleves;
                 console.log(eleves);
             }
-        );
+        ); */
         // this.eleveService.getEleveAll();
 
-        this.eleveService.getEleveAll().subscribe((res : Eleve[] ) => {
-            console.log(res);
+        this.eleveService.getEleveAll().subscribe((eleves : Eleve[] ) => {
+            console.log(eleves);
             
-            return this.eleves = res
+            return this.eleves = eleves;
         });
 
-        // of(1,2,3)
-        // .pipe(map((v) => v + 10))
-        // .subscribe(console.log);
+        this.eleveService.emitEleveSubject();
+
     }
 
 }
