@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Eleve } from '../../models/Eleve.model';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,25 +11,26 @@ export class EleveService {
 
     constructor(private http: HttpClient) { }
 
-    public eleve: Eleve[];
+    public eleve: Eleve[] = [];
 
     public eleve$ = new Subject<Eleve[]>();
 
-    getEleve() {
+    getEleveAll(): Observable<Eleve[]> {
 
-        this.http.get('http://localhost:3000/api/eleves').subscribe(
-            
-            (eleve: Eleve[]) => {
-                
-                if (eleve) {
-                    this.eleve = eleve;
-                    this.emitEleveSubject();
-                }
-            },
-            (error) => {
-                console.log(error);
-            }
-        );
+        return this.http.get<Eleve[]>('http://localhost:3000/api/eleves')
+            .pipe(
+                map(
+                    (eleves : Eleve[]) => {
+
+                        return eleves.map((one_eleve : Eleve) => {
+
+                            return new Eleve().deserialize(one_eleve);
+                        });
+                        
+                    }
+                )
+
+            );
     }
 
     emitEleveSubject(){

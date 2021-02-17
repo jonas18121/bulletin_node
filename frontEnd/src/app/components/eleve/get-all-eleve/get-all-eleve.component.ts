@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Eleve } from '../../../models/Eleve.model';
 import { EleveService } from '../../../services/eleve/eleve.service'
 
@@ -10,7 +11,7 @@ import { EleveService } from '../../../services/eleve/eleve.service'
 })
 export class GetAllEleveComponent implements OnInit {
 
-    public eleves: Eleve[] = [];
+    public eleves: Eleve[];
     private eleveSubscribe: Subscription;
 
     constructor(private eleveService: EleveService) { }
@@ -19,14 +20,23 @@ export class GetAllEleveComponent implements OnInit {
 
     ngOnInit() {
 
-        this.eleveSubscribe = this.eleveService.eleve$.subscribe(
+        /* this.eleveSubscribe = this.eleveService.eleve$.subscribe(
 
             ( eleves: Eleve[] ) => {
                 this.eleves = eleves;
+                console.log(eleves);
             }
+        ); */
+        // this.eleveService.getEleveAll();
 
-        );
-        this.eleveService.getEleve();
+        this.eleveService.getEleveAll().subscribe((eleves : Eleve[] ) => {
+            console.log(eleves);
+            
+            return this.eleves = eleves;
+        });
+
+        this.eleveService.emitEleveSubject();
+
     }
 
 }
