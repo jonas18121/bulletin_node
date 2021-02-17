@@ -1,4 +1,17 @@
-<p>les élèves</p>
+<h1>Liste des élèves</h1>
+
 <div class="blabla" *ngFor="let eleve of eleves">
-    <h3> {{ eleve.firstName }}</h3> 
+    <ul>
+        
+        <pre>
+            <!-- pour debug dans html angular -->
+            <span>{{eleve | json}}</span>
+        </pre>
+
+        <li>{{ eleve.lastName }}</li>
+        <li>{{ eleve.firstName }}</li>
+        <li>{{ eleve.moyenne }} de moyenne</li>
+        <li>{{ eleve.classe_d_ecole.numeroClasse }}</li>
+        <!-- <li>{{  }}</li> -->
+    </ul>
 </div>

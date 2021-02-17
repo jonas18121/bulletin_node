@@ -228,6 +228,7 @@ exports.deleteEleve = async (request, response, next) => {
 exports.getAllEleve = async (request, response, next) => {
 
     await Eleve.find()
+        .populate('classe_d_ecole')
         .then(eleve => response.status(200).json(eleve))
         .catch(error => response.status(400).json({ error }))
     ;
