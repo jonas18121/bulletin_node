@@ -10,6 +10,14 @@
         <p>Moyenne générale : {{ eleve?.moyenne }}/20</p>
         <p>Numéro de sa classe : {{ eleve?.classe_d_ecole?.numeroClasse }}</p>
         <p>Moyenne générale de sa classe : {{ eleve?.classe_d_ecole?.moyenneClasse }}/20 </p>
-        <!-- <p *ngFor="let devoir_eleve of eleve.devoir_eleves"> {{ devoir_eleve?.note }} </p> -->
+
+        <div>
+            <p>Liste de notes</p>
+
+            <ul>
+                <li *ngFor="let devoir_eleve of eleve?.devoir_eleves"> {{ devoir_eleve?.note }} </li>
+            </ul>
+        </div>
+        
     </div>
 </div>

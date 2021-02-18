@@ -1,14 +1,16 @@
 import { ClasseDEcole } from "./ClasseDEcole.model"
 import { Deserializable } from "./Deserializable.model"
+import { DevoirEleve } from "./DevoirEleve.model";
+
 
 export class Eleve implements Deserializable {
 
-    public _id:             string;
-    public firstName:       string;
-    public lastName:        string;
-    public moyenne:         number;
-    public classe_d_ecole:  ClasseDEcole;
-    // public devoir_eleves:   DevoirEleve[];
+    public _id :             string;
+    public firstName :       string;
+    public lastName :        string;
+    public moyenne :         number;
+    public classe_d_ecole :  ClasseDEcole;
+    public devoir_eleves:    DevoirEleve[];
 
     /* deserialize(input: any) {
         Object.assign(this, input);
