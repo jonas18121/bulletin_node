@@ -1,6 +1,6 @@
 <h1>Liste des élèves dans l'école</h1>
 
-<div class="blabla" *ngFor="let eleve of eleves">
+<div class="blabla" *ngFor="let eleve of eleves" (click)="onGetOneEleve(eleve._id)">
     <ul>
         
         <pre>
