@@ -38,18 +38,30 @@ export class EleveService {
         this.eleve$.next(this.eleve)
     }
 
-    getEleveById(id: string){
+    getEleveById(id: string) : Observable<Eleve>{
 
-        return new Promise((resolve, reject) => {
+        return this.http.get<Eleve>('http://localhost:3000/api/eleves/' + id)
+            .pipe(
+                map(
+                    (eleve : Eleve) => {
+
+                        return new Eleve().deserialize(eleve);
+                    }
+                )
+            )
+
+        /* return new Promise((resolve, reject) => {
 
             this.http.get('http://localhost:3000/api/eleves/' + id).subscribe(
                 (response) => {
+                    console.log(resolve(response));
+                    
                     resolve(response);
                 },
                 (error) => {
                     reject(error);
                 }
             );
-        });
+        }); */
     }
 }
