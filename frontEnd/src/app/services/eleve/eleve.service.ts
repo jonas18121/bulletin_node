@@ -15,6 +15,8 @@ export class EleveService {
 
     public eleve$ = new Subject<Eleve[]>();
 
+    
+
     getEleveAll(): Observable<Eleve[]> {
 
         return this.http.get<Eleve[]>('http://localhost:3000/api/eleves')
@@ -34,5 +36,20 @@ export class EleveService {
 
     emitEleveSubject(){
         this.eleve$.next(this.eleve)
+    }
+
+    getEleveById(id: string){
+
+        return new Promise((resolve, reject) => {
+
+            this.http.get('http://localhost:3000/api/eleves/' + id).subscribe(
+                (response) => {
+                    resolve(response);
+                },
+                (error) => {
+                    reject(error);
+                }
+            );
+        });
     }
 }

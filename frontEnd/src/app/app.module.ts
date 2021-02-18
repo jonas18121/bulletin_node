@@ -5,12 +5,14 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { GetAllEleveComponent } from './components/eleve/get-all-eleve/get-all-eleve.component';
+import { GetOneEleveComponent } from './components/eleve/get-one-eleve/get-one-eleve.component';
 
 const appRoutes: Routes = [
 
     { path: 'eleves',
         children: [
             { path: 'all', component: GetAllEleveComponent },
+            { path: 'single/:id', component: GetOneEleveComponent },
             { path: '', pathMatch: 'full', redirectTo: 'all' },
             { path: '**', redirectTo: 'all' }
         ]  
@@ -22,7 +24,8 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    GetAllEleveComponent
+    GetAllEleveComponent,
+    GetOneEleveComponent
   ],
   imports: [
     BrowserModule,
