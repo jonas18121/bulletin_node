@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Eleve } from '../../../models/Eleve.model';
@@ -14,7 +15,10 @@ export class GetAllEleveComponent implements OnInit {
     public eleves: Eleve[];
     private eleveSubscribe: Subscription;
 
-    constructor(private eleveService: EleveService) { }
+    constructor(
+        private eleveService: EleveService,
+        private router: Router
+    ) { }
 
 
 
@@ -37,6 +41,11 @@ export class GetAllEleveComponent implements OnInit {
 
         this.eleveService.emitEleveSubject();
 
+    }
+
+    onGetOneEleve(id: string)
+    {    
+        this.router.navigate(['/eleves/single/' + id]);
     }
 
 }
