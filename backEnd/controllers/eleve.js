@@ -40,7 +40,7 @@ exports.getOneEleve = async (request, response, next) => {
     await Eleve.findOne({ _id: request.params.id })
         .populate('classe_d_ecole')
         .populate('devoir_eleves')
-        .then(eleve => response.status(200).json(eleve))
+        .then(eleve => {response.status(200).json(eleve)})
         .catch(error => response.status(404).json({ error }))
     ;
 }

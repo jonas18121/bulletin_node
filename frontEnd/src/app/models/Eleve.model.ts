@@ -10,18 +10,30 @@ export class Eleve implements Deserializable {
     public lastName :        string;
     public moyenne :         number;
     public classe_d_ecole :  ClasseDEcole;
-    public devoir_eleves:    DevoirEleve[];
+    public devoir_eleves:    DevoirEleve[] = [];
 
-    /* deserialize(input: any) {
-        Object.assign(this, input);
-        return this;
-    } */
 
     
-    deserialize(input: any) : Eleve {
+    deserialize(input: any) : Eleve 
+    {
         Object.assign(this, input);
-        this.classe_d_ecole = new ClasseDEcole().deserialize(input.classe_d_ecole)
+
+        this.devoir_eleves = this.deserialize_for_tab_devoir_eleve(input.devoir_eleves);
+        this.classe_d_ecole = new ClasseDEcole().deserialize(input.classe_d_ecole);
+        
         return this;
     }
+
    
+    deserialize_for_tab_devoir_eleve(input_devoir_eleves : DevoirEleve[]) : DevoirEleve[]
+    {
+        let tab = [];
+
+        for (let index = 0; index < input_devoir_eleves.length; index++) 
+        {
+            tab.push(new DevoirEleve().deserialize(input_devoir_eleves[index])); 
+        }
+
+        return tab;
+    }
 }
