@@ -7,7 +7,7 @@ const auth = require('../middleware/auth');
 const eleveController = require('../controllers/eleve');
 
 
-router.post('/', auth, eleveController.createEleve);
+router.post('/', eleveController.createEleve);
 
 router.get('/:id', eleveController.getOneEleve);
 
