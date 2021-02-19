@@ -10,7 +10,7 @@ export class Eleve implements Deserializable {
     public lastName :        string;
     public moyenne :         number;
     public classe_d_ecole :  ClasseDEcole;
-    public devoir_eleves:    DevoirEleve[] = [];
+    public devoir_eleves:    DevoirEleve[];
 
 
     
