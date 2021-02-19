@@ -24,7 +24,10 @@ export class Eleve implements Deserializable {
         return this;
     }
 
-   
+   /**
+    * pour typé en DevoirEleve chaque objet de la table input_devoir_eleves
+    * @param input_devoir_eleves DevoirEleve[]
+    */
     deserialize_for_tab_devoir_eleve(input_devoir_eleves : DevoirEleve[]) : DevoirEleve[]
     {
         let tab = [];
