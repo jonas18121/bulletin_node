@@ -17,6 +17,11 @@ export class EleveService {
 
     
 
+    /**
+     * Afficher tous les élèves de l'école
+     * 
+     * @returns {Observable<Eleve[]>}
+     */
     getEleveAll(): Observable<Eleve[]> {
 
         return this.http.get<Eleve[]>('http://localhost:3000/api/eleves')
@@ -38,7 +43,13 @@ export class EleveService {
         this.eleve$.next(this.eleve)
     }
 
-    getEleveById(id: string) : Observable<Eleve>{
+    /**
+     * Afficher un élève par son id
+     * 
+     * @param {string} id 
+     * @returns {Observable<Eleve>}
+     */
+    getEleveById(id: string) : Observable<Eleve> {
 
         return this.http.get<Eleve>('http://localhost:3000/api/eleves/' + id)
             .pipe(
@@ -49,19 +60,26 @@ export class EleveService {
                     }
                 )
             )
+        ;
+    }
 
-        /* return new Promise((resolve, reject) => {
+    /**
+     * Creer un nouveau élève
+     * 
+     * @param {Eleve} eleve 
+     */
+    createNewEleve(eleve : Eleve) {
 
-            this.http.get('http://localhost:3000/api/eleves/' + id).subscribe(
+        return new Promise((resolve, reject) => {
+
+            this.http.post('http://localhost:3000/api/eleves', eleve).subscribe(
                 (response) => {
-                    console.log(resolve(response));
-                    
                     resolve(response);
                 },
                 (error) => {
                     reject(error);
                 }
             );
-        }); */
+        });
     }
 }

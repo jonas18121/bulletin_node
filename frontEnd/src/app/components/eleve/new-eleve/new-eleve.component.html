@@ -1,0 +1,23 @@
+<div>
+    <form [formGroup]="eleveForm" (ngSubmit)="onSubmitForm()" >
+
+        <div>
+            <label for="firstName">Prénom : </label>
+            <input type="text" id="firstName" formControlName="firstName">
+        </div>
+
+        <div>
+            <label for="lastName">Nom : </label>
+            <input type="text" id="lastName" formControlName="lastName">
+        </div>
+
+        <!-- <div>
+            <label for="select">Classe</label>
+            <select  id="select">
+                <option [value]="classe_d_ecole"> {{ classeDEcole._id }} </option>
+            </select>
+        </div> -->
+
+        <button type="submit" class="" [disabled]="eleveForm.invalid">Soumettre</button>
+    </form>
+</div>
