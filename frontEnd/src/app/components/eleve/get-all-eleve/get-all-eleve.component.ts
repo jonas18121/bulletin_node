@@ -42,9 +42,9 @@ export class GetAllEleveComponent implements OnInit {
             },
             (error) => {
 
-                error.message = 'Problème d\'accès à l\'api';
+                error.message = 'Problème d\'accès au serveur';
                 error.status = 500;
-                error.statusText = 'ERREUR SERVER';
+                error.statusText = 'ERROR SERVER';
                 console.log(error);
                 alert(error.message);
             }
