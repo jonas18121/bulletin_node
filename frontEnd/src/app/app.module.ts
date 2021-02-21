@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 ////////////////////////// S E R V I C E S /////////////////////////////////
 import { EleveService } from './services/eleve/eleve.service'
+import { ClasseDEcoleService } from './services/classeDEcole/classe-d-ecole.service'
 
 ////////////////////////// C O M P O N E N T S /////////////////////////////
 import { AppComponent } from './app.component';
@@ -44,7 +45,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
-    EleveService
+    EleveService,
+    ClasseDEcoleService
   ],
   bootstrap: [AppComponent]
 })

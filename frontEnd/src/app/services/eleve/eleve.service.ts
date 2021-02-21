@@ -74,6 +74,8 @@ export class EleveService {
 
             this.http.post('http://localhost:3000/api/eleves', eleve).subscribe(
                 (response) => {
+                    console.log(response);
+                    alert('Le nouvel élève a bien été enregistré')
                     resolve(response);
                 },
                 (error) => {
