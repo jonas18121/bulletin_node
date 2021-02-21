@@ -11,8 +11,7 @@ exports.createEleve = async (request, response, next) => {
 
     const eleve = new Eleve({
         _id: new mongoose.Types.ObjectId(),
-        ...request.body
-        
+        ...request.body  
     });
 
     await eleve.save()
@@ -20,11 +19,12 @@ exports.createEleve = async (request, response, next) => {
             .then(classe => {
 
                 classe.eleves.push(eleve);
-                classe.nbEleves.push(classe.eleves.length);
-                // console.log(classe.eleves.length);
+                classe.nbEleves = classe.eleves.length;
 
                 ClasseDEcole.updateOne({_id: classe.id}, classe)
-                    .then(() => response.status(201).json({ message: 'Le nouvel élève a bien été enregistré !'}))
+                    .then(() => {
+                        response.status(201).json({ message: 'Le nouvel élève a bien été enregistré !' })
+                    })
                     .catch(error => response.status(400).json({ error }))
                 ;
             })
@@ -40,7 +40,7 @@ exports.getOneEleve = async (request, response, next) => {
     await Eleve.findOne({ _id: request.params.id })
         .populate('classe_d_ecole')
         .populate('devoir_eleves')
-        .then(eleve => {response.status(200).json(eleve)})
+        .then(eleve => { response.status(200).json(eleve) })
         .catch(error => response.status(404).json({ error }))
     ;
 }

@@ -11,17 +11,12 @@
             <input type="text" id="lastName" formControlName="lastName">
         </div>
 
-        <!-- <div>
-            <label for="select">Classe</label>
-            <select  id="select">
-                <option [value]="classe_d_ecole"> {{ classeDEcole._id }} </option>
+        <div>
+            <label for="select">Choisir un numéro de classe</label>
+            <select formControlName="classe_d_ecole" id="select" >
+                <option *ngFor="let classe of classeDEcoles" [ngValue]="classe._id">{{classe.numeroClasse}}</option>
             </select>
-        </div> -->
-
-        <!-- <h1>My Application</h1>
-            <select [(ngModel)]="selectedValue">
-                <option *ngFor="let c of countries" [ngValue]="c">{{c.name}}</option>
-            </select> -->
+        </div>
 
         <button type="submit" class="" [disabled]="eleveForm.invalid">Soumettre</button>
     </form>
