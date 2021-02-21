@@ -33,11 +33,22 @@ export class GetAllEleveComponent implements OnInit {
         ); */
         // this.eleveService.getEleveAll();
 
-        this.eleveService.getEleveAll().subscribe((eleves : Eleve[] ) => {
-            console.log(eleves);
+        this.eleveService.getEleveAll().subscribe(
             
-            return this.eleves = eleves;
-        });
+            (eleves : Eleve[] ) => {
+                console.log(eleves);
+                
+                return this.eleves = eleves;
+            },
+            (error) => {
+
+                error.message = 'Problème d\'accès à l\'api';
+                error.status = 500;
+                error.statusText = 'ERREUR SERVER';
+                console.log(error);
+                alert(error.message);
+            }
+        );
 
         this.eleveService.emitEleveSubject();
 
