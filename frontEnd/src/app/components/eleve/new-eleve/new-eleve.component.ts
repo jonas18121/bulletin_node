@@ -35,7 +35,6 @@ export class NewEleveComponent implements OnInit {
 
             (classes : ClasseDEcole[]) => {
                 
-                console.log(classes);
                 return this.classeDEcoles = classes;
             }
         );
@@ -45,9 +44,6 @@ export class NewEleveComponent implements OnInit {
             lastName :        ['', Validators.required],
             classe_d_ecole :  ['', Validators.required]
         }); 
-
-        // console.log(this.eleveForm );
-        
     }
 
     onSubmitForm() 
