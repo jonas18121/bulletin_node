@@ -23,10 +23,20 @@ export class GetOneEleveComponent implements OnInit {
         this.route.params.subscribe(
             (params: Params) => {
                 this.eleveService.getEleveById(params.id).subscribe(
+
                     (eleve: Eleve) => {
                         console.log(eleve);
                         
                         return this.eleve = eleve;
+                    },
+                    (error) => {
+
+                        error.message = 'Problème d\'accès à l\'api';
+                        error.status = 500;
+                        error.statusText = 'ERREUR SERVER';
+                        console.log(error);
+                        alert(error.message);
+                        
                     }
                 );
             }
