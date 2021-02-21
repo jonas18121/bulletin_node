@@ -1,7 +1,13 @@
 <nav>
     <div>
         <ul>
-            <li><a routerLink="eleves/all" >gestion des élèves</a></li>
+            <li>
+                <a routerLinkActive="active" routerLink="eleves/all" >gestion des élèves</a>
+
+                <ul>
+                    <li><a routerLinkActive="active" routerLink="eleves/new" >Créer un nouvel élève</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
 </nav>
