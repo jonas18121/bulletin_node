@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Eleve } from 'src/app/models/Eleve.model';
 import { EleveService } from 'src/app/services/eleve/eleve.service';
-import { ClasseDEcoleService } from 'src/app/services/ClasseDEcole/Classe-d-ecole.service';
+import { ClasseDEcoleService } from 'src/app/services/classeDEcole/classe-d-ecole.service';
 import { ClasseDEcole } from 'src/app/models/ClasseDEcole.model';
 
 @Component({
