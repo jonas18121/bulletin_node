@@ -15,6 +15,8 @@ export class EleveService {
 
     public eleve$ = new Subject<Eleve[]>();
 
+    public link : string = 'http://localhost:3000/api/eleves/';
+
     
 
     /**
@@ -24,7 +26,7 @@ export class EleveService {
      */
     getEleveAll(): Observable<Eleve[]> {
 
-        return this.http.get<Eleve[]>('http://localhost:3000/api/eleves')
+        return this.http.get<Eleve[]>(this.link)
             .pipe(
                 map(
                     (eleves : Eleve[]) => {
@@ -51,7 +53,7 @@ export class EleveService {
      */
     getEleveById(id: string) : Observable<Eleve> {
 
-        return this.http.get<Eleve>('http://localhost:3000/api/eleves/' + id)
+        return this.http.get<Eleve>(this.link + id)
             .pipe(
                 map(
                     (eleve : Eleve) => {
@@ -72,7 +74,7 @@ export class EleveService {
 
         return new Promise((resolve, reject) => {
 
-            this.http.post('http://localhost:3000/api/eleves', eleve).subscribe(
+            this.http.post(this.link, eleve).subscribe(
                 (response) => {
                     console.log(response);
                     alert('Le nouvel élève a bien été enregistré')
