@@ -8,31 +8,32 @@ Autre guide Angular authentification avec JSON Web Tokens (JWT) fait d'une autre
 ## Creer la classe qui intercetpe la requête http
 
 J'ai creer un dossier interceptors/ et dedans la classe auth-interceptor.ts. interceptors/auth-interceptor.ts
+
 çà peut être aussi considéré comme un service, exemple : services/auth-interceptor.service.ts
 
 `Dans interceptors/auth-interceptor.ts`
 
-    - import Injectable depuis '@angular/core' et on ajoute le décorateur @Injectable ({providedId: 'root'}) à la classe pour en faire un service Angular.
+- import Injectable depuis '@angular/core' et on ajoute le décorateur @Injectable ({providedId: 'root'}) à la classe pour en faire un service Angular.
 
-    - import HttpInterceptor depuis '@angular/common/http' Implémenter HttpInterceptor pour en faire un Interceptor.
+- import HttpInterceptor depuis '@angular/common/http' Implémenter HttpInterceptor pour en faire un Interceptor.
 
-    - importer HttpRequest, HttpHandler, HttpEvent à partir de '@angular/common/http' et implémenter la fonction d'interception car notre classe hérite/implémente de HttpInterceptor.
+- importer HttpRequest, HttpHandler, HttpEvent à partir de '@angular/common/http' et implémenter la fonction d'interception car notre classe hérite/implémente de HttpInterceptor.
 
-    - La fonction d'intercept renverra next.handle (request) ;. Cela signifie que nous passons le contrôle au prochain intercepteur de la chaîne, s'il y en a un.
+- La fonction d'intercept renverra next.handle (request) ;. Cela signifie que nous passons le contrôle au prochain intercepteur de la chaîne, s'il y en a un.
 
-    - (facultatif) 
-    Authentification / Intercepteur de session
-    Authentication Interceptor peut être utilisé pour ajouter un en-tête d'authentification à votre demande. 
-    Vous pouvez même acheminer l'application vers la page de connexion si l'utilisateur n'est pas authentifié.
+- (facultatif) 
+Authentification / Intercepteur de session
+Authentication Interceptor peut être utilisé pour ajouter un en-tête d'authentification à votre demande. 
+Vous pouvez même acheminer l'application vers la page de connexion si l'utilisateur n'est pas authentifié.
 
-    - ajouter la dépendance AuthService dans le paramètre du constructeur.
+- ajouter la dépendance AuthService dans le paramètre du constructeur.
 
-    - vérifier si l'utilisateur est authentifié à l'aide de this.authService.isAuth$.value
+- vérifier si l'utilisateur est authentifié à l'aide de this.authService.isAuth$.value
 
-    - si l'utilisateur est authentifié, ajouter le jeton d'authentification à l'en-tête de la demande. 
-    ici, nous utilisons request.clone () car la requête est un objet immuable.
+- si l'utilisateur est authentifié, ajouter le jeton d'authentification à l'en-tête de la demande. 
+ici, nous utilisons request.clone () car la requête est un objet immuable.
 
-    - si l'utilisateur n'est pas authentifié, dirigez-le vers la page de connexion.
+- si l'utilisateur n'est pas authentifié, dirigez-le vers la page de connexion.
 
 
 `Résultat dans interceptors/auth-interceptor.ts`
@@ -76,9 +77,9 @@ J'ai creer un dossier interceptors/ et dedans la classe auth-interceptor.ts. int
 
 `Dans app.module.ts` :
 
-    - on importe HTTP_INTERCEPTORS qui vient de @angular/common/http
-    - on importe notre interceptor nommé AuthInterceptor
-    - on renseigne HTTP_INTERCEPTORS et AuthInterceptor dans le providers dans @NgModule
+- on importe HTTP_INTERCEPTORS qui vient de @angular/common/http
+- on importe notre interceptor nommé AuthInterceptor
+- on renseigne HTTP_INTERCEPTORS et AuthInterceptor dans le providers dans @NgModule
 
 HTTP_INTERCEPTORS = un jeton multi-fournisseur qui représente le tableau des HttpInterceptors qui sont enregistrés.
 
