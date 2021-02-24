@@ -16,18 +16,15 @@ export class AuthInterceptor implements HttpInterceptor {
     
     intercept(request : HttpRequest<any>, next : HttpHandler) : Observable<HttpEvent<any>> {
         
-        console.log(request);
-        console.log(this.authService.isAuth$.value);
-        console.log(this.authService.token);
-        
-        
         if (this.authService.isAuth$.value) {
         
             const authToken = this.authService.token;
 
-            request = request.clone({
-                headers : request.headers.set('Authorization', 'Bearer ' + authToken)
-            });
+            request = request.clone(
+                {
+                    headers : request.headers.set('Authorization', 'Bearer ' + authToken)
+                }
+            );
         }
         else{
             // this.router.navigate(['auth/login']); redirige vers la page login si on est pas connecter

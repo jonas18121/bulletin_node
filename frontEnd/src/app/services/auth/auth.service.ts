@@ -25,8 +25,8 @@ export class AuthService {
                     .subscribe(
                         () => {
                             this.login(email, password).then(
-                                () => {
-                                    resolve;
+                                (response) => {
+                                    resolve(response);
                                 }
                             )
                             .catch(
@@ -41,7 +41,7 @@ export class AuthService {
                     )
                 ;
             }
-        ) 
+        ); 
     }
 
     login(email : string, password : string)
@@ -52,15 +52,12 @@ export class AuthService {
                 this.http.post(this.link + '/login', { email : email, password : password })
                     .subscribe(
                         (authData: { token : string, userId : string }) => {
-
-                            console.log(authData);
                             
                             this.token = authData.token;
                             this.userId = authData.userId;
                             this.isAuth$.next(true);
-                            resolve(authData);
 
-                            console.log(this.userId);
+                            resolve(authData);
                         },
                         (error) => {
                             reject(error);
@@ -71,7 +68,8 @@ export class AuthService {
         );
     }
 
-    logout() {
+    logout() 
+    {
         this.isAuth$.next(false);
         this.token = null;
         this.userId = null;
