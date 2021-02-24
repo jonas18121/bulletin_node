@@ -2,12 +2,22 @@
     <div>
         <ul>
             <li>
-                <a routerLinkActive="active" routerLink="eleves/all" >gestion des élèves</a>
+                <a routerLinkActive="active" routerLink="eleves/all" >Gestion des élèves</a>
 
                 <ul>
                     <li><a routerLinkActive="active" routerLink="eleves/new" >Créer un nouvel élève</a></li>
                 </ul>
             </li>
+            <li *ngIf=" !isAuth ">
+                <a routerLinkActive="active" routerLink="auth/signup">Inscription</a>
+            </li>
+            <li *ngIf=" !isAuth ">
+                <a routerLinkActive="active" routerLink="auth/login">Connexion</a>
+            </li>
+            <li *ngIf=" isAuth ">
+                <a routerLinkActive="active" (click)="onLogout()">Déconnexion</a>
+            </li>
+            
         </ul>
     </div>
 </nav>

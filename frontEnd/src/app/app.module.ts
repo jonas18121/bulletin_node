@@ -1,11 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+////////////////////////// I N T E R C E P T O R S ///////////////////////////
+import { AuthInterceptor } from './interceptors/auth-interceptor';
 
-////////////////////////// S E R V I C E S /////////////////////////////////
+////////////////////////// S E R V I C E S //////////////////////////////////
 import { EleveService } from './services/eleve/eleve.service'
 import { ClasseDEcoleService } from './services/classeDEcole/classe-d-ecole.service'
 import { AuthService } from './services/auth/auth.service'
@@ -58,7 +60,12 @@ const appRoutes: Routes = [
   providers: [
     EleveService,
     ClasseDEcoleService,
-    AuthService
+    AuthService,
+    {
+        provide : HTTP_INTERCEPTORS,
+        useClass : AuthInterceptor,
+        multi : true
+    }
   ],
   bootstrap: [AppComponent]
 })
