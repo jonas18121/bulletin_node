@@ -52,10 +52,15 @@ export class AuthService {
                 this.http.post(this.link + '/login', { email : email, password : password })
                     .subscribe(
                         (authData: { token : string, userId : string }) => {
+
+                            console.log(authData);
+                            
                             this.token = authData.token;
                             this.userId = authData.userId;
                             this.isAuth$.next(true);
                             resolve(authData);
+
+                            console.log(this.userId);
                         },
                         (error) => {
                             reject(error);
@@ -72,3 +77,8 @@ export class AuthService {
         this.userId = null;
     }
 }
+
+/**
+ * jeanregistre@gmail.com
+ * jeanregistre
+ */

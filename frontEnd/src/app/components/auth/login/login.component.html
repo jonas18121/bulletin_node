@@ -1,1 +1,15 @@
-<p>login works!</p>
+<p>{{ errorMessage }}</p>
+
+<form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <div>
+        <label for="email">Email : </label>
+        <input type="email" formControlName="email" id="email">
+    </div>
+
+    <div>
+        <label for="password">Mot de passe : </label>
+        <input type="password" formControlName="password" id="password">
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid" >Connexion</button>
+</form>
