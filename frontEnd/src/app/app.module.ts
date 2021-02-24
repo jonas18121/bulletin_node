@@ -18,6 +18,7 @@ import { GetAllEleveComponent } from './components/eleve/get-all-eleve/get-all-e
 import { GetOneEleveComponent } from './components/eleve/get-one-eleve/get-one-eleve.component';
 import { NewEleveComponent } from './components/eleve/new-eleve/new-eleve.component';
 import { LoginComponent } from './components/auth/login/login.component';
+import { SignupComponent } from './components/auth/signup/signup.component';
 
 const appRoutes: Routes = [
 
@@ -32,7 +33,7 @@ const appRoutes: Routes = [
     },
     { path: 'auth',
         children :[
-            // { path: 'signup', component: SignunComponent },
+            { path: 'signup', component: SignupComponent },
             { path: 'login', component: LoginComponent },
             { path: '', pathMatch: 'full', redirectTo: 'login' },
             { path: '**', redirectTo: 'login' }
@@ -48,7 +49,8 @@ const appRoutes: Routes = [
     GetAllEleveComponent,
     GetOneEleveComponent,
     NewEleveComponent,
-    LoginComponent
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
