@@ -4,29 +4,29 @@ import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'app-signup',
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class SignupComponent implements OnInit {
 
-    loginForm : FormGroup;
+    signupForm : FormGroup;
     errorMessage : string;
 
     constructor(
         private formBuilder : FormBuilder,
         private router : Router,
-        private authService : AuthService
+        private authService : AuthService,
     ) { }
 
-    ngOnInit() {
+    ngOnInit() 
+    {
         this.initForm();
     }
 
-    initForm()
+    initForm() 
     {
-        this.loginForm = this.formBuilder.group(
-
+        this.signupForm = this.formBuilder.group(
             {
                 email : ['', 
                     [
@@ -34,17 +34,17 @@ export class LoginComponent implements OnInit {
                         Validators.email
                     ]
                 ],
-                password :  ['', Validators.required]
+                password :  ['', Validators.required] 
             }
         );
     }
 
-    onLogin() 
+    onSignup()
     {
-        const email = this.loginForm.value.email;
-        const password = this.loginForm.value.password;
+        const email = this.signupForm.value.email;
+        const password = this.signupForm.value.password;
 
-        this.authService.login(email, password).then(
+        this.authService.createNewUser(email, password).then(
             () => {
                 this.router.navigate(['eleves/all']);
             }
