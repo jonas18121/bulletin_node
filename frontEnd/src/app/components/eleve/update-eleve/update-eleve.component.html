@@ -1,0 +1,43 @@
+<h1>Modifier un élève</h1>
+
+<pre>
+    <!-- pour debug dans html angular 
+    <span>{{eleve | json}}
+        {{classeDEcoles | json}}
+    </span>
+    -->
+</pre> 
+
+<div>
+    <!-- 
+        on ajoute *ngIf="eleve" pour rendre le formulaire uniquement ,
+        lorsque l'élève a été analiser et existe.
+        sinon s'il n'y a pas *ngIf="eleve", il y aura une erreur dans la console
+        et on ne voit pas les données de l'élève dans les champs input   
+    -->
+    <form *ngIf="eleve" [formGroup]="eleveForm" (ngSubmit)="onSubmitForm()" >
+
+        <div>
+            <label for="firstName">Prénom : </label>
+            <input type="text" id="firstName" formControlName="firstName">
+        </div>
+
+        <div>
+            <label for="lastName">Nom : </label>
+            <input type="text" id="lastName" formControlName="lastName">
+        </div>
+
+        <div>
+            <div *ngIf="eleve?.classe_d_ecole?.numeroClasse">
+                <p> Classe actuel : {{ eleve?.classe_d_ecole?.numeroClasse }} </p>
+            </div>
+            
+            <label for="select">Choisir un numéro de classe</label>
+            <select formControlName="classe_d_ecole" id="select" >
+                <option *ngFor="let classe of classeDEcoles" [ngValue]="classe._id">{{ classe.numeroClasse }}</option>
+            </select>
+        </div> 
+
+        <button type="submit" class="" [disabled]="eleveForm.invalid">Soumettre</button>
+    </form>
+</div>
