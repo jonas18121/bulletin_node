@@ -20,6 +20,10 @@
                 <li *ngFor="let devoir_eleve of eleve?.devoir_eleves"> {{ devoir_eleve?.note }} </li>
             </ul>
         </div>
+
+        <div>
+            <button (click)="onGetUpdateEleve(eleve._id)" >Modifier</button>
+        </div>
         
     </div>
 </div>
