@@ -43,7 +43,11 @@ export class GetOneEleveComponent implements OnInit {
         );
 
         this.eleveService.emitEleveSubject();
+    }
 
+    onGetUpdateEleve(id : string)
+    {
+        this.router.navigate(['/eleves/update/' + id])
     }
 
 }

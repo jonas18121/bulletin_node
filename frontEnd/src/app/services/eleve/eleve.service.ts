@@ -57,7 +57,6 @@ export class EleveService {
             .pipe(
                 map(
                     (eleve : Eleve) => {
-
                         return new Eleve().deserialize(eleve);
                     }
                 )
@@ -85,5 +84,27 @@ export class EleveService {
                 }
             );
         });
+    }
+
+    /**
+     * Modifier un élève
+     *  
+     * @param {string} id 
+     * @param {Eleve} eleve 
+     * 
+     * @returns {Observable<Eleve>} eleve 
+     */
+    updateEleve(id : string, eleve : Eleve) : Observable<Eleve>
+    {
+        return this.http.put<Eleve>(this.link + id, eleve)
+            .pipe(
+                map(
+                    (eleve : Eleve) => {
+
+                        return eleve;
+                    }
+                )
+            )
+        ;
     }
 }

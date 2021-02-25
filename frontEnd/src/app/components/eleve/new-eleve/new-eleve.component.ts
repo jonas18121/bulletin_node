@@ -29,8 +29,6 @@ export class NewEleveComponent implements OnInit {
     ngOnInit() 
     {
         this.initForm();
-        console.log(this.authService.userId);
-        
     }
 
     initForm()
