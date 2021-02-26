@@ -107,4 +107,25 @@ export class EleveService {
             )
         ;
     }
+
+    /**
+     * Supprimer un élève
+     * 
+     * @param {string} id
+     * 
+     * @returns {Observable<any>}
+     */
+    deleteEleve(id : string) : Observable<any>
+    {
+        return this.http.delete<any>(this.link + id)
+            .pipe(
+                map(
+                    (response) => {
+                        
+                        return response;
+                    }
+                )
+            )
+        ;
+    }
 }
