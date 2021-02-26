@@ -10,10 +10,10 @@
 
 <div>
     <!-- 
-        on ajoute *ngIf="eleve" pour rendre le formulaire uniquement ,
-        lorsque l'élève a été analiser et existe.
-        sinon s'il n'y a pas *ngIf="eleve", il y aura une erreur dans la console
-        et on ne voit pas les données de l'élève dans les champs input   
+        on ajoute *ngIf="eleve" pour afficher le formulaire uniquement ,
+        lorsque l'élève existe et a été analiser.
+        Sinon s'il n'y a pas *ngIf="eleve", il y aura une erreur dans la console
+        et on ne verra pas les données de l'élève dans les champs input   
     -->
     <form *ngIf="eleve" [formGroup]="eleveForm" (ngSubmit)="onSubmitForm()" >
 
@@ -31,7 +31,7 @@
             <div *ngIf="eleve?.classe_d_ecole?.numeroClasse">
                 <p> Classe actuel : {{ eleve?.classe_d_ecole?.numeroClasse }} </p>
             </div>
-            
+
             <label for="select">Choisir un numéro de classe</label>
             <select formControlName="classe_d_ecole" id="select" >
                 <option *ngFor="let classe of classeDEcoles" [ngValue]="classe._id">{{ classe.numeroClasse }}</option>

@@ -1,11 +1,5 @@
 <div>
     <h1>Eleve </h1>
-    <pre>
-         <!-- pour debug dans html angular  -->
-        <!-- <span>{{eleve | json}}</span> -->
-    </pre> 
-
-    
 
     <div>
         <h2>{{ eleve?.firstName }} {{ eleve?.lastName }}</h2>
@@ -23,6 +17,7 @@
 
         <div>
             <button (click)="onGetUpdateEleve(eleve._id)" >Modifier</button>
+            <button (click)="onDeleteEleve()" >Suprimer</button>
         </div>
         
     </div>

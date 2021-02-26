@@ -50,4 +50,26 @@ export class GetOneEleveComponent implements OnInit {
         this.router.navigate(['/eleves/update/' + id])
     }
 
+    onDeleteEleve()
+    {
+        this.eleveService.deleteEleve(this.eleve._id)
+            .subscribe(
+
+                () => {
+                    this.router.navigate(['/eleves/all']);
+                    alert('Cette élève a bien été supprimer !');
+                },
+                (error) => {
+
+                    error.message = 'Vous n\'est pas autoriser à faire cette opération !';
+                    error.status = 401;
+                    error.statusText = 'Pas autoriser (Unauthorized)';
+                    console.log(error);
+                    alert(error.message);
+                    
+                }
+            )
+        ;
+    }
+
 }
