@@ -83,7 +83,7 @@ export class UpdateEleveComponent implements OnInit {
                 },
                 (error) => {
 
-                    error.message = 'Vous n\'est pas autoriser a faire cette opération !';
+                    error.message = 'Vous n\'est pas autoriser à faire cette opération !';
                     error.status = 401;
                     error.statusText = 'Pas autoriser (Unauthorized)';
                     console.log(error);
