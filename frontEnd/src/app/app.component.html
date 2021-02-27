@@ -8,6 +8,13 @@
                     <li><a routerLinkActive="active" routerLink="eleves/new" >Créer un nouvel élève</a></li>
                 </ul>
             </li>
+            <li>
+                <a routerLinkActivate="active" routerLink="classe-d-ecoles/all">Gestion des Classes</a>
+
+                <!--<ul>
+                     <li><a routerLinkActivate="active" routeLink="classe-d-ecoles/new">Créer une nouvelle Classe</a></li> 
+                </ul> -->
+            </li>
             <li *ngIf=" !isAuth ">
                 <a routerLinkActive="active" routerLink="auth/signup">Inscription</a>
             </li>

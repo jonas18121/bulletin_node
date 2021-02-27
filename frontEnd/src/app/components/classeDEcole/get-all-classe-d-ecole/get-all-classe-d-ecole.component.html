@@ -1,0 +1,15 @@
+<section>
+    <h1>Liste des classes dans l'école</h1>
+
+    <div *ngFor="let classe of classes">
+
+        <ul>
+            <li>Numéro de la classe : {{ classe.numeroClasse }}</li>
+            <li>Moyenne de la classe : {{ classe.moyenneClasse }}</li>
+            <li>Nombres d'élève dans la classe : {{ classe.nbEleves }}</li>
+        </ul>
+    </div>
+</section>
+
+
+
