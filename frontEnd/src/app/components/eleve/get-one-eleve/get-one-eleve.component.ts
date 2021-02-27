@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Eleve } from 'src/app/models/Eleve.model';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { EleveService } from 'src/app/services/eleve/eleve.service';
 
 @Component({
@@ -10,15 +12,20 @@ import { EleveService } from 'src/app/services/eleve/eleve.service';
 })
 export class GetOneEleveComponent implements OnInit {
 
-    public eleve: Eleve;
+    public eleve : Eleve;
+    public isAuth : boolean;
+    public isAuthSubscription : Subscription; 
 
     constructor(
         private eleveService: EleveService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private authService : AuthService
     ) { }
 
-    ngOnInit(){
+    ngOnInit()
+    {
+        this.initAuth();
 
         this.route.params.subscribe(
             (params: Params) => {
@@ -70,6 +77,15 @@ export class GetOneEleveComponent implements OnInit {
                 }
             )
         ;
+    }
+
+    initAuth()
+    {
+        this.isAuthSubscription = this.authService.isAuth$.subscribe(
+            (auth) => {
+                this.isAuth = auth;
+            }
+        );
     }
 
 }

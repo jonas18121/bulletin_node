@@ -11,6 +11,7 @@ import { AuthInterceptor } from './interceptors/auth-interceptor';
 import { EleveService } from './services/eleve/eleve.service'
 import { ClasseDEcoleService } from './services/classeDEcole/classe-d-ecole.service'
 import { AuthService } from './services/auth/auth.service'
+import { AuthGuardService } from './services/guards/auth-guard.service';
 
 ////////////////////////// C O M P O N E N T S /////////////////////////////
 import { AppComponent } from './app.component';
@@ -27,8 +28,8 @@ const appRoutes: Routes = [
         children: [
             { path: 'all', component: GetAllEleveComponent },
             { path: 'single/:id', component: GetOneEleveComponent },
-            { path: 'new', component: NewEleveComponent },
-            { path: 'update/:id', component: UpdateEleveComponent },
+            { path: 'new', canActivate: [AuthGuardService], component: NewEleveComponent },
+            { path: 'update/:id', canActivate: [AuthGuardService], component: UpdateEleveComponent },
             { path: '', pathMatch: 'full', redirectTo: 'all' },
             { path: '**', redirectTo: 'all' }
         ]  
@@ -66,6 +67,7 @@ const appRoutes: Routes = [
     EleveService,
     ClasseDEcoleService,
     AuthService,
+    AuthGuardService,
     {
         provide : HTTP_INTERCEPTORS,
         useClass : AuthInterceptor,

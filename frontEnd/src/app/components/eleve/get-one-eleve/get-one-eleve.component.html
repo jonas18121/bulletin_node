@@ -15,7 +15,7 @@
             </ul>
         </div>
 
-        <div>
+        <div *ngIf=" isAuth ">
             <button (click)="onGetUpdateEleve(eleve._id)" >Modifier</button>
             <button (click)="onDeleteEleve()" >Suprimer</button>
         </div>
