@@ -12,8 +12,8 @@ import { EleveService } from '../../../services/eleve/eleve.service'
 })
 export class GetAllEleveComponent implements OnInit {
 
-    public eleves: Eleve[];
-    private eleveSubscribe: Subscription;
+    public eleves : Eleve[];
+    private eleveSubscribe : Subscription;
 
     constructor(
         private eleveService: EleveService,
@@ -22,17 +22,8 @@ export class GetAllEleveComponent implements OnInit {
 
 
 
-    ngOnInit() {
-
-        /* this.eleveSubscribe = this.eleveService.eleve$.subscribe(
-
-            ( eleves: Eleve[] ) => {
-                this.eleves = eleves;
-                console.log(eleves);
-            }
-        ); */
-        // this.eleveService.getEleveAll();
-
+    ngOnInit() 
+    {
         this.eleveService.getEleveAll().subscribe(
             
             (eleves : Eleve[] ) => {
@@ -51,7 +42,6 @@ export class GetAllEleveComponent implements OnInit {
         );
 
         this.eleveService.emitEleveSubject();
-
     }
 
     onGetOneEleve(id: string)
