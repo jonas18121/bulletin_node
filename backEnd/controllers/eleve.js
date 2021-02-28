@@ -11,15 +11,19 @@ exports.createEleve = async (request, response, next) => {
 
     const eleve = new Eleve({
         _id: new mongoose.Types.ObjectId(),
-        ...request.body  
+        ...request.body,  
+        moyenne: 0
     });
 
     await eleve.save()
         .then(() => ClasseDEcole.findOne({ _id: eleve.classe_d_ecole })
+            .populate('eleves')
             .then(classe => {
 
                 classe.eleves.push(eleve);
+
                 classe.nbEleves = classe.eleves.length;
+                classe.moyenneClasse = calculMoyenneClasse(classe.nbEleves, classe.eleves);
 
                 ClasseDEcole.updateOne({_id: classe.id}, classe)
                     .then(() => {
@@ -29,7 +33,7 @@ exports.createEleve = async (request, response, next) => {
                 ;
             })
         )
-        .catch(error => response.status(400).json({ error }))
+        .catch(error => response.status(500).json({ error }))
     ;
 }
 
@@ -69,22 +73,15 @@ exports.modifyEleve = async (request, response, next) => {
                         oldClasse.nbEleves = oldClasse.eleves.length;
                         
 
-                        console.log('avant for de l\'ancienne classe ' + oldClasse.eleves);
                         for(i = 0 ; i < oldClasse.nbEleves ; i++)
                         {
-
-                            
-                            console.log('pendant for de l\'ancienne classe ' + oldClasse.eleves[i].moyenne);
                             moyenneOldClasse = oldClasse.eleves[i].moyenne;
 
-                            console.log('voici la moyenne de l\'ancienne classe ' + moyenneOldClasse);
                             sommeOldClasse += moyenneOldClasse ;
 
                         };
-                        console.log('après for de l\'ancienne classe ' + sommeOldClasse);
 
                         oldClasse.moyenneClasse = sommeOldClasse / oldClasse.nbEleves;
-                        console.log('moyenne de l\'ancienne classe ' + oldClasse.moyenneClasse);
 
                         // console.log('ancienne classe ' + oldClasse);
 
@@ -104,21 +101,13 @@ exports.modifyEleve = async (request, response, next) => {
                                         newClasse.eleves.push(eleve);
 
                                         newClasse.nbEleves = newClasse.eleves.length;
-                                        console.log('nombre d\'élève dans la nouvelle classe ' + newClasse.nbEleves);
 
-                                        console.log('avant for nouvelle classe ' + newClasse.eleves);
                                         for(i = 0 ; i < newClasse.nbEleves ; i++)
                                         {
-
-                                            
-                                            console.log('pendant for nouvelle classe ' + newClasse.eleves[i].moyenne);
                                             moyenneNewClasse = newClasse.eleves[i].moyenne;
 
-                                            console.log('voici la moyenne nouvelle classe ' + moyenneNewClasse);
                                             sommeNewClasse += moyenneNewClasse ;
-
                                         };
-                                        console.log('après for nouvelle classe ' + sommeNewClasse);
 
                                         newClasse.moyenneClasse = sommeNewClasse / newClasse.nbEleves;
                                         console.log('moyenne de la nouvelle classe nouvelle classe ' + newClasse.moyenneClasse);
@@ -195,34 +184,41 @@ exports.modifyEleve = async (request, response, next) => {
 
 exports.deleteEleve = async (request, response, next) => {
 
-    await Eleve.findOne({ _id: request.params.id })
-        .then(eleve => {
+    const eleve = await Eleve.findOneAndDelete({ _id: request.params.id });
 
-            // trouver la classe de l'élève
-            ClasseDEcole.findOne({ _id: eleve.classe_d_ecole })
-                .then(classe => {
+    if (!eleve) {
+        return response.status(400).json({ message: 'Pas d\'élève trouver avec cette id' })
+    }
+    
+    await ClasseDEcole.findByIdAndUpdate(
+        { 
+            _id: eleve.classe_d_ecole 
+        },
+        {
+            $pull:
+                {
+                    eleves: eleve._id
+                }    
+        }
+    )
+    .populate('eleves')
+    .then(
+        classe => {
 
-                    // supprimer l'id de l'élève dans la classe
-                    classe.eleves.splice(classe.eleves.indexOf(eleve._id),1);
+            classe.nbEleves = classe.eleves.length;
+            classe.moyenneClasse = calculMoyenneClasse(classe.nbEleves, classe.eleves);
 
-                    // modifier la classe
-                    ClasseDEcole.updateOne({ _id: classe._id }, classe)
-                        .then(() => {
-
-                            // supprimer les informations de l'élève
-                            Eleve.deleteOne({ _id: request.params.id })
-                                .then(() => response.status(200).json({ message: 'Objet supprimé !'}))
-                                .catch(error => response.status(400).json({ error }))
-                            ;
-                        })
-                    ;
-
-                })
-                .catch(error => response.status(500).json({ error }))
+            ClasseDEcole.updateOne({ _id: classe._id }, classe)
+                .then(
+                    () => {
+                        response.status(200).json({ message: 'La classe a été bien modifier après la suppréssion de l\'élève ' })
+                    }
+                )
+                .catch(error => response.status(400).json({ error }))
             ;
-        })
-        .catch(error => response.status(500).json({ error }))
-    ;
+        }
+    )
+    .catch(error => response.status(400).json({ error }));
 }
 
 
@@ -233,4 +229,27 @@ exports.getAllEleve = async (request, response, next) => {
         .then(eleve => response.status(200).json(eleve))
         .catch(error => response.status(400).json({ error }))
     ;
+}
+
+
+
+calculMoyenneClasse = (nbEleves, classe_eleves) => {
+
+    var moyenneClasse;
+    var sommeClasse = 0;
+
+    if (nbEleves == 0) {
+        return moyenneClasse = 0;
+    }
+    else{
+        
+        for(i = 0 ; i < nbEleves ; i++)
+        {
+            moyenneClasse = classe_eleves[i].moyenne;
+
+            sommeClasse += moyenneClasse ;
+        };
+
+        return moyenneClasse = sommeClasse / nbEleves;
+    }
 }
