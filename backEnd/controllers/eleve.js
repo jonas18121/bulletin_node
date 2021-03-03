@@ -4,6 +4,10 @@ const { populate } = require('../models/eleve');
 const ClasseDEcole = require('../models/classeDEcole');
 
 
+// $set  = ajouter
+// $pull = retirer
+// $push = ajouter dans tableau
+
 
 exports.createEleve = async (request, response, next) => {
 
@@ -187,38 +191,25 @@ exports.deleteEleve = async (request, response, next) => {
     const eleve = await Eleve.findOneAndDelete({ _id: request.params.id });
 
     if (!eleve) {
-        return response.status(400).json({ message: 'Pas d\'élève trouver avec cette id' })
+        return response.status(400).json({ message: 'Pas d\'élève trouver avec cette id' });
     }
-    
-    await ClasseDEcole.findByIdAndUpdate(
-        { 
-            _id: eleve.classe_d_ecole 
-        },
-        {
-            $pull:
-                {
-                    eleves: eleve._id
-                }    
-        }
-    )
-    .populate('eleves')
-    .then(
-        classe => {
 
-            classe.nbEleves = classe.eleves.length;
-            classe.moyenneClasse = calculMoyenneClasse(classe.nbEleves, classe.eleves);
+    const classe = await ClasseDEcole.findByIdAndUpdate( {  _id: eleve.classe_d_ecole }, { $pull: { eleves: eleve._id } } ).populate('eleves');
 
-            ClasseDEcole.updateOne({ _id: classe._id }, classe)
-                .then(
-                    () => {
-                        response.status(200).json({ message: 'La classe a été bien modifier après la suppréssion de l\'élève ' })
-                    }
-                )
-                .catch(error => response.status(400).json({ error }))
-            ;
-        }
-    )
-    .catch(error => response.status(400).json({ error }));
+    if (!classe) {
+        return response.status(400).json({ message: 'La classe n\'a pas pu être modifier ou la classe n\'existe pas' });
+    }
+
+    classe.nbEleves = classe.eleves.length;
+    classe.moyenneClasse = calculMoyenneClasse(classe.nbEleves, classe.eleves);
+
+    const modif_classe = await ClasseDEcole.updateOne({ _id: classe._id }, classe);
+
+    if (!modif_classe) {
+        return response.status(400).json({ message: 'La classe n\'a pas pu être modifier ou la classe n\'existe pas' });
+    } 
+
+    return response.status(200).json({ message: 'La classe a été bien modifier après la suppréssion de l\'élève ' });
 }
 
 
@@ -253,3 +244,59 @@ calculMoyenneClasse = (nbEleves, classe_eleves) => {
         return moyenneClasse = sommeClasse / nbEleves;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* await ClasseDEcole.findByIdAndUpdate(
+        { 
+            _id: eleve.classe_d_ecole 
+        },
+        {
+            $pull:
+                {
+                    eleves: eleve._id
+                }    
+        }
+    )
+    .populate('eleves')
+    .then(
+        classe => {
+
+            classe.nbEleves = classe.eleves.length;
+            classe.moyenneClasse = calculMoyenneClasse(classe.nbEleves, classe.eleves);
+
+            ClasseDEcole.updateOne({ _id: classe._id }, classe)
+                .then(
+                    () => {
+                        response.status(200).json({ message: 'La classe a été bien modifier après la suppréssion de l\'élève ' });
+                    }
+                )
+                .catch(error => response.status(400).json({ error }))
+            ;
+        }
+    )
+    .catch(error => response.status(400).json({ error })); */
