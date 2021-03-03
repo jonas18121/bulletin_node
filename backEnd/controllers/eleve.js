@@ -19,26 +19,29 @@ exports.createEleve = async (request, response, next) => {
         moyenne: 0
     });
 
-    await eleve.save()
-        .then(() => ClasseDEcole.findOne({ _id: eleve.classe_d_ecole })
-            .populate('eleves')
-            .then(classe => {
+    const eleve_save = await eleve.save();
 
-                classe.eleves.push(eleve);
+    if (!eleve_save) {
+        return response.status(400).json({ message: 'L\'éleve n\'a pas été enregistrer et n\'existe pas' });
+    }
 
-                classe.nbEleves = classe.eleves.length;
-                classe.moyenneClasse = calculMoyenneClasse(classe.nbEleves, classe.eleves);
+    const classe = await ClasseDEcole.findOne({ _id: eleve_save.classe_d_ecole }).populate('eleves');
 
-                ClasseDEcole.updateOne({_id: classe.id}, classe)
-                    .then(() => {
-                        response.status(201).json({ message: 'Le nouvel élève a bien été enregistré !' })
-                    })
-                    .catch(error => response.status(400).json({ error }))
-                ;
-            })
-        )
-        .catch(error => response.status(500).json({ error }))
-    ;
+    if (!classe) {
+        return response.status(400).json({ message: 'La classe n\'existe pas' });
+    }
+
+    classe.eleves.push(eleve);
+    classe.nbEleves = classe.eleves.length;
+    classe.moyenneClasse = calculMoyenneClasse(classe.nbEleves, classe.eleves);
+
+    const modif_classe = await ClasseDEcole.updateOne({_id: classe.id}, classe);
+
+    if (!modif_classe) {
+        return response.status(400).json({ message: 'La classe n\'a pas pu être modifier ou la classe n\'existe pas' });
+    } 
+
+    return response.status(200).json({ message: 'La classe a été bien modifier après l\'ajout de l\'élève ' });
 }
 
 
@@ -263,6 +266,30 @@ calculMoyenneClasse = (nbEleves, classe_eleves) => {
 
 
 
+/* pour creer un eleve
+
+
+await eleve.save()
+        .then(() => ClasseDEcole.findOne({ _id: eleve.classe_d_ecole })
+            .populate('eleves')
+            .then(classe => {
+
+                classe.eleves.push(eleve);
+
+                classe.nbEleves = classe.eleves.length;
+                classe.moyenneClasse = calculMoyenneClasse(classe.nbEleves, classe.eleves);
+
+                ClasseDEcole.updateOne({_id: classe.id}, classe)
+                    .then(() => {
+                        response.status(201).json({ message: 'Le nouvel élève a bien été enregistré !' })
+                    })
+                    .catch(error => response.status(400).json({ error }))
+                ;
+            })
+        )
+        .catch(error => response.status(500).json({ error }))
+    ; 
+*/
 
 
 
@@ -270,8 +297,9 @@ calculMoyenneClasse = (nbEleves, classe_eleves) => {
 
 
 
+/* pour supprimer un eleve 
 
-/* await ClasseDEcole.findByIdAndUpdate(
+await ClasseDEcole.findByIdAndUpdate(
         { 
             _id: eleve.classe_d_ecole 
         },
@@ -299,4 +327,5 @@ calculMoyenneClasse = (nbEleves, classe_eleves) => {
             ;
         }
     )
-    .catch(error => response.status(400).json({ error })); */
+    .catch(error => response.status(400).json({ error })); 
+*/
