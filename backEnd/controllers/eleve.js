@@ -204,16 +204,22 @@ exports.modifyEleve = async (request, response, next) => {
         if (!oldClasse) {
             return response.status(500).json({ error });
         }
-        console.log(oldClasse);
+        console.log('ancienne classe ' + oldClasse);
+        console.log('ancienne classe moyenne avant ' + oldClasse.moyenneClasse);
 
         // supprimer l'id de l'élève dans l'ancienne classe
         oldClasse.eleves.splice(oldClasse.eleves.indexOf(eleve._id),1);
         oldClasse.nbEleves = oldClasse.eleves.length;
         oldClasse.moyenneClasse = calculMoyenneClasse(oldClasse.nbEleves, oldClasse.eleves);
 
+        console.log('ancienne classe moyenne après ' + oldClasse.moyenneClasse);
+
+        console.log('ancienne classe avant comfirmation de modification ' + oldClasse);
+
         //enregistrer la modification fait sur l'ancienne classe de l'élève
         const oldClasse_modif = await ClasseDEcole.updateOne({ _id: eleve.classe_d_ecole._id }, oldClasse);
 
+        
         if (!oldClasse_modif) {
             return response.status(500).json({ error });
         }
@@ -225,9 +231,13 @@ exports.modifyEleve = async (request, response, next) => {
             return response.status(500).json({ error });
         }
 
+        console.log('nouvelle classe , moyenne avant ' + newClasse.moyenneClasse);
+
         newClasse.eleves.push(eleve);
         newClasse.nbEleves = newClasse.eleves.length;
         newClasse.moyenneClasse = calculMoyenneClasse(newClasse.nbEleves, newClasse.eleves);
+
+        console.log('nouvelle classe , moyenne après ' + newClasse.moyenneClasse);
 
         //enregistrer la modification fait sur la nouvelle classe de l'élève
         const newClasse_modif = await ClasseDEcole.updateOne({ _id: request.body.classe_d_ecole }, newClasse);
