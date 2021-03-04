@@ -7,6 +7,7 @@ const ClasseDEcole = require('../models/classeDEcole');
 // $set  = ajouter
 // $pull = retirer
 // $push = ajouter dans tableau
+// $unset = supprimer un champ particulier
 
 
 exports.createEleve = async (request, response, next) => {
@@ -59,7 +60,7 @@ exports.getOneEleve = async (request, response, next) => {
 
 exports.modifyEleve = async (request, response, next) => {
 
-    await Eleve.findOne({ _id: request.params.id })
+    /* await Eleve.findOne({ _id: request.params.id })
         .populate('classe_d_ecole')
         .then(eleve => {
 
@@ -185,7 +186,87 @@ exports.modifyEleve = async (request, response, next) => {
                 ;
             }
         })
-    ; 
+    ;  */
+
+    //-----------------------------------------------------------------------------------
+
+    const eleve = await Eleve.findOne({ _id: request.params.id })
+    // .populate('classe_d_ecole');
+
+    //si il y a un changement de classe lors de la modification de l'élève 
+    if (eleve.classe_d_ecole._id != request.body.classe_d_ecole) {
+
+
+        console.log(eleve);
+
+        const oldClasse = await ClasseDEcole.findOne({ _id: eleve.classe_d_ecole }).populate('eleves');
+
+        if (!oldClasse) {
+            return response.status(500).json({ error });
+        }
+        console.log(oldClasse);
+
+        // supprimer l'id de l'élève dans l'ancienne classe
+        oldClasse.eleves.splice(oldClasse.eleves.indexOf(eleve._id),1);
+        oldClasse.nbEleves = oldClasse.eleves.length;
+        oldClasse.moyenneClasse = calculMoyenneClasse(oldClasse.nbEleves, oldClasse.eleves);
+
+        //enregistrer la modification fait sur l'ancienne classe de l'élève
+        const oldClasse_modif = await ClasseDEcole.updateOne({ _id: eleve.classe_d_ecole._id }, oldClasse);
+
+        if (!oldClasse_modif) {
+            return response.status(500).json({ error });
+        }
+
+        // trouver la nouvelle classe de l'élève
+        const newClasse = await ClasseDEcole.findOne({ _id: request.body.classe_d_ecole }).populate('eleves');
+
+        if (!newClasse) {
+            return response.status(500).json({ error });
+        }
+
+        newClasse.eleves.push(eleve);
+        newClasse.nbEleves = newClasse.eleves.length;
+        newClasse.moyenneClasse = calculMoyenneClasse(newClasse.nbEleves, newClasse.eleves);
+
+        //enregistrer la modification fait sur la nouvelle classe de l'élève
+        const newClasse_modif = await ClasseDEcole.updateOne({ _id: request.body.classe_d_ecole }, newClasse);
+
+        if (!newClasse_modif) {
+            return response.status(500).json({ error });
+        }
+
+        const eleve_modif = await Eleve.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id });
+
+        if (!eleve_modif) {
+            return response.status(500).json({ error });
+        }   
+        
+        return response.status(200).json({ message: 'L\'élève a bien été modifier ' });
+
+    }
+    else{
+
+        if (eleve.moyenne != request.body.moyenne) {
+
+            const classeCurrent = ClasseDEcole.findOne({ _id: eleve.classe_d_ecole._id }).populate('eleves');
+
+            if (!classeCurrent) {
+                return response.status(500).json({ error });
+            }
+
+            classeCurrent.moyenneClasse = calculMoyenneClasse(classeCurrent.nbEleves, classeCurrent.eleves);
+        }
+
+        const eleve_modif = await Eleve.updateOne({ _id: request.params.id }, { ...request.body, _id: request.params.id });
+
+        if (!eleve_modif) {
+            return response.status(500).json({ error });
+        }   
+        
+        return response.status(200).json({ message: 'L\'élève a bien été modifier ' });
+    }
+
 }
 
 
